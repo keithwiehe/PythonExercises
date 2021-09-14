@@ -1,4 +1,5 @@
-import random
+from random import randrange
+from sys import stdout
 ''' HW3 Problem 1 9/14
   This solution works on paper as Theta(nlgn)
   The list is iterated through. 
@@ -32,65 +33,54 @@ def nbankcards(list, OriginalListSize, time):
       return x
   return nbankcards(nextlist, OriginalListSize, time)
 
-#really slow b/c of list.pop
-def nbankcards2(list, OriginalListSize, time, warning = 0):
-  if list == []:
-    print("WARNINGS: %i " %warning)
-    return None
-  #edge case
-  if OriginalListSize == 1:
-    print("WARNINGS: %i " %warning)
-    return list[0]
-  countT = 1
-  countF = 0
-  halfSize = OriginalListSize // 2
-  Size = len(list)
-  if halfSize > Size < OriginalListSize:
-    print("WARNINGS: %i " %warning)
-    return None
-  matching = list.pop()
-  #for loop starts at end of list so that list.pop() is O(1)
-  for i in range(Size - 2, -1, -1):
+#----------------------------------------------------------------------------}}}
+
+def rand_perm(size):  # {{{
+  p = []
+  while len(p) < size:
+    r = randrange(size)
+    if r not in p:
+      p.append(r)
+  return p
+#----------------------------------------------------------------------------}}}
+def rand_cards(n, max_value=2):  # {{{
+  base = []
+  for value in range(1,max_value):
+    max_reps = n//2 - len(base) - 1 + (n % 2)
+    if max_reps == 0:
+      break
+    base += [value]*randrange(1,max_reps+1)
+  base += [max_value]*(n-len(base))
+
+  perm = rand_perm(n)
+  base_perm = [ base[perm[i]] for i in range(n) ]
+
+  return base_perm
+#----------------------------------------------------------------------------}}}
+
+
+def nbankcards_memo(list, time, maxlength, start, M=[]):
+  if M==[]:
+    M = [None for _ in range(len(list))]
+  elif M[n]:
+    return M[n]
+  matching = list[n]
+  if len(list) > 2:
+    L_side = nbankcards_memo(list, time, n//2, start, M)
+    R_side = nbankcards_memo(list, time, maxlength, n//2 + 1, M)
+  for x in list:
     time += 1
-    if matching == list[i]:
-      print("Time: %i match: %i len(list): %i halfSize: %i OriginalListSize: %i Size %i" 
-        %(time, matching, len(list), halfSize, OriginalListSize, Size))
-      countT += 1
-      list.pop(i)
-      if i < len(list) // 10:
-        warning += len(list) - i
-    #not True
-    else: #matching != list[i]:
-      countF += 1
-    if countT > halfSize:
-      print("WARNINGS: %i " %warning)
-      return matching
-    if countF >= halfSize:
-      print("WARNINGS: %i " %warning)
-      return nbankcards2(list, OriginalListSize, time, warning)
-
-nlist = list(range(1, 50000))
-for i in range(0, 120):
-  nlist = nlist + list(range(1, 50))
-  for k in range(0,50):
-    nlist.insert(random.randint(0,len(nlist) - 1),18)
-nlength = len(nlist)
+    if matching == x:
+      # print("Time: %i x: %i len(list): %i halfSize: %i OriginalListSize: %i Size %i" 
+      #   %(time, x, halfSize, len(list), OriginalListSize, Size))
+      count += 1
+    if matching != x:
+      nextlist.append(x)
+    if count > halfSize:
+      return x
 
 
 
-print(nlist)
-print(nbankcards(nlist, nlength, 0))
-
-def nbankcards3(list, OriginalListSize, time):
-  print("time: %i listSize: %i" %(time, len(list)))
-  time += 1
-  halfOLSize = OriginalListSize // 2
-  Size = len(list)
-  if halfOLSize > Size < OriginalListSize:
-    return None
-  x = list[0]
-  list.remove(x)#only pops FIRST of element
-  print("x: %i halfOLSize: %i len(list): %i OriginalListSize: %i Size %i" %(x, halfOLSize, len(list), OriginalListSize, Size))
-  if Size - len(list) > halfOLSize:
-    return x
-  nbankcards3(list, OriginalListSize, time)
+n = 200
+print(n)
+print(nbankcards_memo(rand_cards(n), 0))
