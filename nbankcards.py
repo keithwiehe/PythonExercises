@@ -1,37 +1,6 @@
 from random import randrange
 from sys import stdout
-''' HW3 Problem 1 9/14
-  This solution works on paper as Theta(nlgn)
-  The list is iterated through. 
-  If index is not a match it is added to a new list. Then 
-  n - (last set of matches) is the next list.
 
-'''
-def nbankcards(list, OriginalListSize, time):
-  if list == []:
-    return None
-  #edge case
-  if OriginalListSize == 1:
-    return list[0]
-  count = 0
-  halfSize = OriginalListSize // 2
-  Size = len(list)
-  #remaining list is too small to be majority equality
-  if halfSize > Size < OriginalListSize:
-    return None
-  matching = list[0]
-  nextlist = []
-  for x in list:
-    time += 1
-    if matching == x:
-      print("Time: %i x: %i len(list): %i halfSize: %i OriginalListSize: %i Size %i" 
-        %(time, x, halfSize, len(list), OriginalListSize, Size))
-      count += 1
-    if matching != x:
-      nextlist.append(x)
-    if count > halfSize:
-      return x
-  return nbankcards(nextlist, OriginalListSize, time)
 
 #----------------------------------------------------------------------------}}}
 
@@ -58,29 +27,94 @@ def rand_cards(n, max_value=2):  # {{{
   return base_perm
 #----------------------------------------------------------------------------}}}
 
+'''
+  Homework 3 Problem 1
+  Followed Given solution for Homework2
+  list - list of all cards
+  maxlength- end of the list passed
+  start - start index of the list passed
+  card - current card index we are comparing to others
+  Yes if returned is not -1, 0
+'''
+def nbankcards(list, start, maxlength, card):
+  count = 0
+  if maxlength - start == 0:
+    return -1, 0
+  if maxlength - start == 1:
+    if list[card] == list[start]:
+      return list[card], 1
+    return -1, 0
+  elif maxlength - start == 2:
+    if (list[card] == list[start]) and (card != start):
+      count += 1
+    if (list[card] == list[maxlength - 1]) and (card != maxlength -1):
+      count += 1
+    return list[card], count
+  if maxlength - start > 2:
+    #L_card and R_card should = card, equality count
+    L_card, L_count = nbankcards(list, start, start + ((maxlength - start) // 2), start)
+    R_card, R_count = nbankcards(list, start + ((maxlength - start) // 2) + 1, maxlength, maxlength //2+1)
+    if L_card == R_card and R_card != -1:
+        return list[card], L_count + R_count
+    elif L_card == -1:
+      return list[R_card], R_count
+    elif R_card == -1:
+      return list[L_card], L_count
+    else:
+      L_card2, L_count2 = nbankcards(list, start, maxlength // 2, R_card)
+      R_card2, R_count2 = nbankcards(list, maxlength // 2 + 1, maxlength, L_card)
+      if L_count + R_count2 > R_count + L_count2 and R_card != -1:
+        return list[R_card2], L_count + R_count2
+      elif L_count + R_count2 < R_count + L_count2 and L_card2 != -1:
+        return list[L_card2], R_count + L_count2
+      else:
+        return -1, 0
 
-def nbankcards_memo(list, time, maxlength, start, M=[]):
+
+
+'''
+  Homework 3 Problem 1
+  list - list of all cards
+  maxlength- end of the list passed
+  start - start index of the list passed
+  card - current card index we are comparing to others
+'''
+def nbankcards_memo(list, start, maxlength, card, M=[]):
+  print(list)
+  if maxlength - start == 0:
+    return -1, 0
   if M==[]:
     M = [None for _ in range(len(list))]
-  elif M[n]:
-    return M[n]
-  matching = list[n]
-  if len(list) > 2:
-    L_side = nbankcards_memo(list, time, n//2, start, M)
-    R_side = nbankcards_memo(list, time, maxlength, n//2 + 1, M)
-  for x in list:
-    time += 1
-    if matching == x:
-      # print("Time: %i x: %i len(list): %i halfSize: %i OriginalListSize: %i Size %i" 
-      #   %(time, x, halfSize, len(list), OriginalListSize, Size))
-      count += 1
-    if matching != x:
-      nextlist.append(x)
-    if count > halfSize:
-      return x
+  if maxlength - start == 1:
+    if list[card] == list[start]:
+      M[card] = 1
+    return M[card]
+  elif maxlength - start == 2:
+    if (list[card] == list[start]) and (card != start):
+      M[card] += 1
+    if (list[card] == list[maxlength - 1]) and (card != maxlength -1):
+      M[card] += 1
+    return M[card]
+  if maxlength - start > 2:
+    #L_card and R_card should = card, equality count
+    L_card, L_count = nbankcards_memo(list, start, start + ((maxlength - start) // 2), start, M)
+    R_card, R_count = nbankcards_memo(list, start + ((maxlength - start) // 2) + 1, maxlength, maxlength //2+1, M)
+    if L_card == R_card and R_card != -1:
+        return list[card], L_count + R_count
+    elif L_card == -1:
+      return list[R_card], R_count
+    elif R_card == -1:
+      return list[L_card], L_count
+    else:
+      print(R_card)
+      L_card2, L_count2 = nbankcards_memo(list, start, maxlength // 2, R_card, M)
+      R_card2, R_count2 = nbankcards_memo(list, maxlength // 2 + 1, maxlength, L_card, M)
+      if L_count + R_count2 > R_count + L_count2 and R_card != -1:
+        return list[R_card2], L_count + R_count2
+      elif L_count + R_count2 < R_count + L_count2 and L_card2 != -1:
+        return list[L_card2], R_count + L_count2
+      else:
+        return -1, 0
 
-
-
-n = 200
-print(n)
-print(nbankcards_memo(rand_cards(n), 0))
+n = 8
+print(nbankcards(rand_cards(n), 0, n, 0))

@@ -1,9 +1,10 @@
 from random import randrange
 from sys import stdout
-''' Homework 3iii
+''' Homework 3 Problem 5iii
     P - 2dlist of paper rectangle prices at different lengths (Original should be a square)
     m - x-dimension length of paper
     c - y-dimension length of paper
+    M[] - Memoization array
 '''
 def paper_cut(P,m,n, M=[]):
   if M==[]:

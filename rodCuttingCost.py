@@ -67,7 +67,7 @@ def brute_force_modified_rod_cut(P,n):  # {{{
       max_cuts = list(p)
   return max_cuts, max_profit
 #-----------------------------------------------------}}}
-''' Homework 3iii
+''' Homework 3 Problem 3 iii
     P - list of rod prices at different lengths
     m - max length of the rod
     c - cost per cut
@@ -83,7 +83,7 @@ def modified_rod_cut(P,m, c):
       max_cut = L_cut + R_cut
   return max_cut, max_rev
 
-''' Homework 3iv
+''' Homework 3 Problem 3 iv
     P - list of rod prices at different lengths
     m - max length of the rod
     c - cost per cut
@@ -105,7 +105,7 @@ def modified_rod_cut_memo(P,m,c, M=[]):
   M[m] = max_cut, max_rev
   return M[m]
 
-''' Homework 3iv
+''' Homework 3 Problem 3 iv
     P - list of rod prices at different lengths
     m - max length of the rod
     c - cost per cut
