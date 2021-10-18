@@ -271,22 +271,6 @@ def find_cycle(G): # {{{
   seen[n] = True
   while len(working_nodes) != 0:#nodes
     u = working_nodes.pop()
-<<<<<<< Updated upstream
-    print("length: ", len(G[u]), " G[u]: ", G[u])
-    if len(G[u]) == 1:
-      working_nodes.append(G[u][0])
-      seen[G[u][0]] = True
-    for i in range(1, len(G[u])):
-      node1 = G[u][i-1]
-      node2 = G[u][i]
-      working_nodes.append(node1)
-      print("node1: ", node1, "node2: ", node2)
-      cycle = common_ancestor_paths(BFS_tree, node1, node2)
-      if cycle != []:
-        print("cycle: ", cycle)
-        return cycle[1]#only care about second tuple
-      seen[node1] = True    
-=======
     for i in BFS_tree[u]:
       working_nodes.append(i)
       for k in BFS_tree[i]:
@@ -299,7 +283,6 @@ def find_cycle(G): # {{{
         if G.is_cycle(cycle[0] + cycle[1]):
           return cycle
       seen[i] = True    
->>>>>>> Stashed changes
   print("returning None.")
   return None
 
