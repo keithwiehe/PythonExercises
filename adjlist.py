@@ -73,7 +73,7 @@ class AdjList: # {{{
     path is an array. Return True if path[i-1] -> path[i] in G for 
     0 < i < len(path) and false otherwise.
     """
-    if not path or len(path) <= 2:    # if path is [] or None
+    if not path:    # if path is [] or None
       return False
     for i in range(1, len(path)):
       ispath = self.has_edge(path[i - 1], path[i])
@@ -262,14 +262,16 @@ def find_cycle(G): # {{{
   have to take the same edge back to 1. 
 
   You might want to use the helper function common_ancestor_paths().
-  """
+  didn't finish"""
   n = choice(G.nodes)
   BFS_tree, dist = BFS(G, n)#constant
+  # print("n: ", n, "BFS_tree:\n",BFS_tree)
   seen = [False for _ in G.nodes]#constant
   working_nodes = deque([n])
   seen[n] = True
   while len(working_nodes) != 0:#nodes
     u = working_nodes.pop()
+<<<<<<< Updated upstream
     print("length: ", len(G[u]), " G[u]: ", G[u])
     if len(G[u]) == 1:
       working_nodes.append(G[u][0])
@@ -284,6 +286,20 @@ def find_cycle(G): # {{{
         print("cycle: ", cycle)
         return cycle[1]#only care about second tuple
       seen[node1] = True    
+=======
+    for i in BFS_tree[u]:
+      working_nodes.append(i)
+      for k in BFS_tree[i]:
+        print("u: ",u,"i: ", i, "k: ", k)
+        cycle = common_ancestor_paths(BFS_tree, u, i)
+        cycle2 = common_ancestor_paths(BFS_tree, i, k)
+        cycle3 = common_ancestor_paths(BFS_tree, k, u)
+        # cycle += cycle2 + cycle3
+        print("cycle1: ", cycle,"cycle2: ", cycle2,"cycle3: ", cycle3)
+        if G.is_cycle(cycle[0] + cycle[1]):
+          return cycle
+      seen[i] = True    
+>>>>>>> Stashed changes
   print("returning None.")
   return None
 
