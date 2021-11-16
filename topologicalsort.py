@@ -184,8 +184,25 @@ def topological_sort(G):  # {{{
   vertices of G arranged in the topological order. Your algorithm should be
   *linear* in (number of vertices + number of edges).
   """
+<<<<<<< Updated upstream
 
   return # remove in your solution
+=======
+  S = []
+  while len(G.nodes) > 0:
+    cycle = True
+    for n in G.nodes:
+      if G.in_degree(n) == 0:
+        cycle = False
+        S.append(n)
+        for _ in range(len(G[n])):
+          G.del_edge(n, G[n][0])#all edges are removed so 0 always eliminates one
+        G.nodes.remove(n)
+    if cycle == True:
+      return None
+        
+  return S
+>>>>>>> Stashed changes
 #----------------------------------------------------------------------------}}}
 
 def find_cycle_directed(G):  # {{{
@@ -197,12 +214,31 @@ def find_cycle_directed(G):  # {{{
   should return [1]. In contrast to an undirected graph, 2-cycles such as 
   1 -> 2 -> 1 count as cycles.
   """
+<<<<<<< Updated upstream
 
   return None   # no cycle present
+=======
+  S = []
+  while len(G.nodes) > 0:
+    cycle = True
+    for n in G.nodes:
+      if G.in_degree(n) == 0:
+        cycle = False
+        S.append(n)
+        for _ in range(len(G[n])):
+          G.del_edge(n, G[n][0])#all edges are removed so 0 always eliminates one
+        G.nodes.remove(n)
+    if cycle == True:
+      return None
+  if len(S) == 0:
+    return None    
+  return S
+>>>>>>> Stashed changes
 #----------------------------------------------------------------------------}}}
 
 # Use this to check your topological_sort algorithm.
 # A = randgraph_DAG(10, d=(1+5**0.5)/2)
+<<<<<<< Updated upstream
 # S = topological_sort(A)
 # print(A)
 # print(S)
@@ -216,3 +252,18 @@ def find_cycle_directed(G):  # {{{
 #   if C1 != None and not G.is_cycle(C1):
 #     print("Whoops!", G, C1)
 #     break
+=======
+# print(A)
+# S = topological_sort(A)
+# print(S)
+
+# Use this to test your implementation of find_cycle_directed.
+for _ in range(10**3):
+  stdout.write("."); stdout.flush()
+  G = randgraph(randrange(25), d=(1+5**0.5)/2, directed=True)
+  C1 = find_cycle_directed(G)
+  print("C1: ",C1)
+  if C1 != None and not G.is_cycle(C1):
+    print("Whoops! G: ", G,"C1: ", C1)
+    break
+>>>>>>> Stashed changes
